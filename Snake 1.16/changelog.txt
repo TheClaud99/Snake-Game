@@ -1,0 +1,27 @@
+1.14--------
+-made the window resizable
+
+1.13---------
+-changed the movement system
+-added portal
+
+1.11----------
+-added particles
+
+1.10----------
+-remaked initial menu
+-added record section
+-added multiplayer
+
+1.9------------
+-added sounds
+
+1.8------------
+-added discoball pickup
+
+1.7------------
+-added restart option in-game
+-added mouse input event
+
+1.6------------
+-added themes and menu

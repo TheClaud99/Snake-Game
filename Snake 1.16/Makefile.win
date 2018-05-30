@@ -1,0 +1,51 @@
+# Project: Snake
+# Makefile created by Dev-C++ 5.11
+
+CPP      = g++.exe -D__DEBUG__
+CC       = gcc.exe -D__DEBUG__
+WINDRES  = windres.exe
+RES      = Objects/Snake_private.res
+OBJ      = Objects/Snake.o Objects/LTexture.o Objects/OTexture.o Objects/Particle.o Objects/TTexture.o Objects/Winsock.o Objects/Texture.o $(RES)
+LINKOBJ  = Objects/Snake.o Objects/LTexture.o Objects/OTexture.o Objects/Particle.o Objects/TTexture.o Objects/Winsock.o Objects/Texture.o $(RES)
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -L"C:/Program Files (x86)/Dev-Cpp/SDL2_image-2.0.1/x86_64-w64-mingw32/lib" -L"C:/Program Files (x86)/Dev-Cpp/SDL2_ttf-2.0.14/x86_64-w64-mingw32/lib" -L"C:/Program Files (x86)/Dev-Cpp/SDL2_mixer-2.0.1/x86_64-w64-mingw32/lib" -L"C:/Program Files (x86)/Dev-Cpp/SDL2-2.0.7/x86_64-w64-mingw32/lib" -static-libgcc -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -L"SDL2-2.0.8/lib" -L"SDL2_image-2.0.3/lib" -L"SDL2_mixer-2.0.1/lib" -L"SDL2_ttf-2.0.14/lib" -L"discord-rpc/win64-dynamic/lib" -lmingw32  -lSDL2main -lSDL2  -lSDL2_image  -lSDL2_ttf  -lSDL2_mixer -lwsock32 -lws2_32 -ldiscord_rpc -g3
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/7.2.0/include" -I"SDL2-2.0.8/include" -I"SDL2_image-2.0.3/include" -I"SDL2_mixer-2.0.1/include" -I"SDL2_ttf-2.0.14/include" -I"discord-rpc/win64-dynamic/include" -I"classes"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/7.2.0/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/7.2.0/include/c++" -I"C:/Program Files (x86)/Dev-Cpp/SDL2_image-2.0.1/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/SDL2_mixer-2.0.1/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/SDL2_ttf-2.0.14/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/SDL2-2.0.7/x86_64-w64-mingw32/include" -I"SDL2-2.0.8/include" -I"SDL2_image-2.0.3/include" -I"SDL2_mixer-2.0.1/include" -I"SDL2_ttf-2.0.14/include" -I"discord-rpc/win64-dynamic/include" -I"classes"
+BIN      = Snake.exe
+CXXFLAGS = $(CXXINCS) -g3
+CFLAGS   = $(INCS) -g3
+RM       = rm.exe -f
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN)
+
+$(BIN): $(OBJ)
+	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
+
+Objects/Snake.o: Snake.cpp
+	$(CPP) -c Snake.cpp -o Objects/Snake.o $(CXXFLAGS)
+
+Objects/LTexture.o: classes/LTexture.cpp
+	$(CPP) -c classes/LTexture.cpp -o Objects/LTexture.o $(CXXFLAGS)
+
+Objects/OTexture.o: classes/OTexture.cpp
+	$(CPP) -c classes/OTexture.cpp -o Objects/OTexture.o $(CXXFLAGS)
+
+Objects/Particle.o: classes/Particle.cpp
+	$(CPP) -c classes/Particle.cpp -o Objects/Particle.o $(CXXFLAGS)
+
+Objects/TTexture.o: classes/TTexture.cpp
+	$(CPP) -c classes/TTexture.cpp -o Objects/TTexture.o $(CXXFLAGS)
+
+Objects/Winsock.o: classes/Winsock.cpp
+	$(CPP) -c classes/Winsock.cpp -o Objects/Winsock.o $(CXXFLAGS)
+
+Objects/Texture.o: classes/Texture.cpp
+	$(CPP) -c classes/Texture.cpp -o Objects/Texture.o $(CXXFLAGS)
+
+Objects/Snake_private.res: Snake_private.rc 
+	$(WINDRES) -i Snake_private.rc --input-format=rc -o Objects/Snake_private.res -O coff 
+
