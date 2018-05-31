@@ -887,7 +887,7 @@ string genericMenu(string highWrite, string selections[], int selectionsNumber, 
 
 
 
-void initialMenu(SDL_Event &e)
+bool initialMenu(SDL_Event &e)
 {
 	string themes[] = {"Normal", "Horror"};
 	bool quit = false;
@@ -934,11 +934,14 @@ void initialMenu(SDL_Event &e)
 	
 	SDL_Delay(2000);
 	*/
-	string choices[] = {"Singleplayer", "Multiplayer", "Records"}, choice;
+	
 	
 	
 	while(!quit && e.type != SDL_QUIT)
 	{
+		string choices[] = {"Singleplayer", "Multiplayer", "Records", "Exit"};
+		string choice;
+
 		choice = genericMenu("Snake Game by Claudio Mano", choices, sizeof(choices) / sizeof(string), e);
 		if(choice == choices[0])
 		{
@@ -948,8 +951,17 @@ void initialMenu(SDL_Event &e)
 		}
 		else if(choice == choices[1])
 		{
-			multiplayer = true;
-			quit = true;
+			string choices[] = {"Server", "Client", "Back"};
+			string choice;
+			choice = genericMenu("Choose modality", choices, sizeof(choices) / sizeof(string), e);
+
+			if(choice != "Back")
+			{
+				multiplayer = true;
+				quit = true;
+				gMode = choice;
+			}
+			
 		}
 		else if(choice == choices[2])
 		{
@@ -963,8 +975,14 @@ void initialMenu(SDL_Event &e)
 			
 			while(genericMenu("Higests scores", temp, RECORD_NUMBER + 1, e) != "back" && e.type != SDL_QUIT);
 		}
+		else if(choice == choices[3])
+		{
+			return false;
+		}
 	}
 	
+	return true;
+
 }
 
 
@@ -1382,9 +1400,6 @@ SDL_Thread* startMultiplayer(SDL_Event &e)
 	char IP[17];
 	
 	SDL_Thread* multiplayerThread;
-	string mod[] = {"server", "client"};
-	
-	gMode = genericMenu("Choose modality", mod, sizeof(mod) / sizeof(string), e);
 	
 	if(gMode == "server")
 	{
@@ -1483,8 +1498,7 @@ int main(int argv, char* args[])
 		{
 			
 			//Show the initial menu.
-			initialMenu(e);
-			if(e.type == SDL_QUIT)
+			if(!initialMenu(e) || e.type == SDL_QUIT)
 				return 0;
 			
 			if(multiplayer)
