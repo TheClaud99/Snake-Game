@@ -32,10 +32,10 @@ are functions and the main part of game execution
 #include "classes/globals.inc"
 
 /*/Uncomment on Windows/*/
-//#include "Winsock.h"
+#include "Winsock.h"
 
 /*/Uncomment on Linux/*/
-#include "classes/Socket.h"
+//#include "classes/Socket.h"
 
 
 using namespace std;
@@ -294,7 +294,7 @@ bool Init()
 	}
 	else
 	{
-		gWindow = SDL_CreateWindow("Snake game by Claudio Mano Alpha 1.8", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		gWindow = SDL_CreateWindow("Snake game by Claudio Mano Alpha 1.17", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if(gWindow == NULL)
 		{
 			cout << SDL_GetError() << endl;
@@ -891,6 +891,7 @@ bool initialMenu(SDL_Event &e)
 {
 	string themes[] = {"Normal", "Horror"};
 	bool quit = false;
+	bool exitGame = false;
 	int i = 0;
 	
 	ifstream recordsFile("saves/records.bin", ios::binary);
@@ -909,32 +910,6 @@ bool initialMenu(SDL_Event &e)
 	{
 		cout << "Error opening the file\n" << endl;
 	}
-	
-	/*
-	SDL_RenderClear(gRenderer);
-	
-	//render the introduction text
-	gInitialMenuTextTexture.render((SCREEN_WIDTH - gInitialMenuTextTexture.getWidth()) / 2, (SCREEN_HEIGHT - gInitialMenuTextTexture.getHeight()) / 2);
-	
-	//render the top scores
-	gInitialMenuTextTexture.loadFromRenderedText("Top scores:", {0, 0, 0}, TTF_OpenFont("ttf/times.ttf", 20));
-	gInitialMenuTextTexture.render(0, SCREEN_HEIGHT - 2 * gInitialMenuTextTexture.getHeight());
-	
-	for(i = 0; i < RECORD_NUMBER; i++)
-	{
-		if(gRecords[i] != "" && gRecordScores[i] != 0)
-		{
-			gInitialMenuTextTexture.loadFromRenderedText(to_string(i+1) + ". " + gRecords[i] + "   " + to_string(gRecordScores[i]), {0, 0, 0}, TTF_OpenFont("ttf/times.ttf", 20));
-			gInitialMenuTextTexture.render(i * 200, SCREEN_HEIGHT - gInitialMenuTextTexture.getHeight());	
-		}
-		
-	}
-	
-	SDL_RenderPresent(gRenderer);
-	
-	SDL_Delay(2000);
-	*/
-	
 	
 	
 	while(!quit && e.type != SDL_QUIT)
@@ -977,11 +952,11 @@ bool initialMenu(SDL_Event &e)
 		}
 		else if(choice == choices[3])
 		{
-			return false;
+			exitGame = true;
 		}
 	}
 	
-	return true;
+	return exitGame;
 
 }
 
@@ -1355,9 +1330,9 @@ int mThread(void* data)
 	gMode = *(string*)data;
 	char message;
 	
-	if(gMode == "server")
+	if(gMode == "Server")
 	{
-		while(net.serverRecive(&message, 1) > 0)
+		while(net.serverRecive(&message, 1) > 0 && !endGame)
 		{
 			if((int)message < 0)
 			{
@@ -1371,7 +1346,7 @@ int mThread(void* data)
 		
 		cout << "Ended data reciving from the client\n";
 	}
-	else if(gMode == "client")
+	else if(gMode == "Client")
 	{
 		
 		while(net.clientRecive(&message, 1) > 0 && !endGame)
@@ -1399,10 +1374,12 @@ SDL_Thread* startMultiplayer(SDL_Event &e)
 	
 	char IP[17];
 	
-	SDL_Thread* multiplayerThread;
+	SDL_Thread* multiplayerThread = NULL;
+
 	
-	if(gMode == "server")
+	if(gMode == "Server")
 	{
+
 		net.getMyIp(IP);
 		
 		SDL_RenderClear(gRenderer);
@@ -1417,7 +1394,7 @@ SDL_Thread* startMultiplayer(SDL_Event &e)
 			multiplayerThread = SDL_CreateThread(mThread, "Multiplayer thread", (void*) &gMode);
 		}
 	}
-	else if(gMode == "client")
+	else if(gMode == "Client")
 	{
 
 		strcpy(IP, inputMenu("Insert server IP address", "", e).c_str());
@@ -1498,7 +1475,7 @@ int main(int argv, char* args[])
 		{
 			
 			//Show the initial menu.
-			if(!initialMenu(e) || e.type == SDL_QUIT)
+			if(initialMenu(e) || e.type == SDL_QUIT)
 				return 0;
 			
 			if(multiplayer)
@@ -1667,11 +1644,11 @@ int main(int argv, char* args[])
 						//Send the score.
 						if(multiplayer)
 						{
-							if(gMode == "server")
+							if(gMode == "Server")
 							{
 								net.serverSend((char*) &gScore, 1);
 							}
-							else if(gMode == "client")
+							else if(gMode == "Client")
 							{
 								net.clientSend((char*) &gScore, 1);
 							}
@@ -1764,11 +1741,11 @@ int main(int argv, char* args[])
 						cout << "Waiting opponent end\n";
 						
 						
-						if(gMode == "server")
+						if(gMode == "Server")
 						{
 							net.serverSend(&endMessage, 1);
 						}
-						else if(gMode == "client")
+						else if(gMode == "Client")
 						{
 							net.clientSend(&endMessage, 1);
 						}
