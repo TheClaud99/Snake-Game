@@ -1,7 +1,7 @@
 [Project]
 FileName=Snake.dev
 Name=Snake
-Type=1
+Type=0
 Ver=2
 ObjFiles=
 Includes=SDL2-2.0.8\include;SDL2_image-2.0.3\include;SDL2_mixer-2.0.1\include;SDL2_ttf-2.0.14\include;classes

@@ -963,6 +963,7 @@ bool initialMenu(SDL_Event &e)
 
 void renderScore(int score, int yPos, SDL_Color color = {255, 255, 255})
 {
+	gScoreTexture.setTextureColorMod(color);
 	gScoreTexture.setPosition(SCREEN_WIDTH, 0);
 	int scoreDivider = 1, i = 1;
 	
