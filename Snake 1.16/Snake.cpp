@@ -63,7 +63,7 @@ const int TEXT_SIZE = 30;
 const int INITIAL_SNAKE_PIECES = 3;
 
 //Pickup spawn probability.
-const int PICKUP_SPAWN_PROB = 10;
+const int PICKUP_SPAWN_PROB = 20;
 
 //Port for multiplayer.
 const int PORT = 25565;
@@ -90,6 +90,16 @@ struct bodyPiece
 	string type;
 }
 snakePieces[MAX_PIECES];
+
+enum pickups
+{
+	DISCOBALL,
+	PORTAL,
+	TOTAL_PICKUPS,
+};
+
+bool activatedPickups[TOTAL_PICKUPS];
+
 
 //Rendering color.
 SDL_Color gColor;
@@ -257,20 +267,13 @@ void resetGame()
 	//Replace the apple end the pick up.
 	Replacer(gAppleTexture);
 	Replacer(gPickupTexture, 1);
+	
+	
+	//The list to able and disable pickups
+	activatedPickups[DISCOBALL] = true;
+	activatedPickups[PORTAL] = true;
 }
-/*
-void initDiscord()
-{
-	DiscordEventHandlers handlers;
-	memset(&handlers, 0, sizeof(handlers));
-	handlers.ready = handleDiscordReady;
-	handlers.errored = handleDiscordError;
-	handlers.disconnected = handleDiscordDisconnected;
-	handlers.joinGame = handleDiscordJoin;
-	handlers.spectateGame = handleDiscordSpectate;
-	handlers.joinRequest = handleDiscordJoinRequest;
-	Discord_Initialize(APPLICATION_ID, &handlers, 1, NULL);
-}*/
+
 
 bool Init()
 {
@@ -464,7 +467,7 @@ bool loadMedia()
 		cout << Mix_GetError() << endl;
 	}
 	
-	gMusic = Mix_LoadMUS("sounds/salve_sono_il_mano.wav");
+	gMusic = Mix_LoadMUS("sounds/sax_guy.wav");
 	if(gMusic == NULL)
 	{
 		cout << Mix_GetError() << endl;
@@ -1250,7 +1253,7 @@ void changeTexturesColor(SDL_Color color)
 
 int changeColors(void* data)
 {
-	int times = 50;
+	int times = 38;
 	srand(time(NULL));
 	Uint8 color;
 	endEffect = false;
@@ -1306,6 +1309,7 @@ int portal(void* data)
 	}
 	
 	portalActivated = false;
+	endEffect = true;
 	
 	return 0;
 	
@@ -1660,26 +1664,38 @@ int main(int argv, char* args[])
 						if(speedDecrease > 0)
 							speedDecrease -= 5;
 						
-						if(rand() % PICKUP_SPAWN_PROB == 1 && endEffect)
+						
+						if(!spawnPickUp && endEffect)
 						{
-							if(!spawnPickUp)
+							
+							switch(rand() % PICKUP_SPAWN_PROB)
 							{
-								switch(rand() % 2)
-								{
-									case 0:
+								case 0:
+									if(activatedPickups[DISCOBALL])
+									{
 										gPickupTexture = gDiscoBallTexture;
 										pickup = "discoball";
-										break;
+										spawnPickUp = true;
+									}
 									
-									case 1:
+									break;
+								
+								case 1:
+									if(activatedPickups[PORTAL])
+									{
 										gPickupTexture = gPortalTexture;
 										pickup = "portal";
-										break;
-								}
-								Replacer(gPickupTexture, counter);
+										spawnPickUp = true;
+									}
+									
+									break;
 							}
-							spawnPickUp = true;
+							Replacer(gPickupTexture, counter);
+							
+							
 						}
+						
+						
 					}
 
 					
