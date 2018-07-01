@@ -956,6 +956,7 @@ bool initialMenu(SDL_Event &e)
 		else if(choice == choices[3])
 		{
 			exitGame = true;
+			quit = true;
 		}
 	}
 	
